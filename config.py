@@ -12,5 +12,5 @@ class Config:
     DB_PORT = os.environ.get("DB_PORT", "3306")
     DB_NAME = os.environ.get("DB_NAME", "leave_management")
 
-    SQLALCHEMY_DATABASE_URI = "sqlite:///leave_management.db"
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "sqlite:///leave_management.db").replace("postgres://", "postgresql://", 1)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
