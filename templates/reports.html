@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Reports — LeaveDesk{% endblock %}
+{% block content %}
+<h1>Reports — {{ year }}</h1>
+
+<div class="grid-3" style="margin-bottom:24px;">
+    <div class="balance-card">
+        <div class="type-name">Approved Days Taken</div>
+        <div class="remaining">{{ total_approved }}</div>
+    </div>
+    <div class="balance-card">
+        <div class="type-name">Pending Requests</div>
+        <div class="remaining">{{ total_pending }}</div>
+    </div>
+    <div class="balance-card">
+        <div class="type-name">Rejected Requests</div>
+        <div class="remaining">{{ total_rejected }}</div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>All Requests This Year</h3>
+    {% if requests %}
+    <table>
+        <thead>
+            <tr><th>Employee</th><th>Type</th><th>Dates</th><th>Days</th><th>Status</th><th>Reviewed By</th></tr>
+        </thead>
+        <tbody>
+            {% for r in requests %}
+            <tr>
+                <td>{{ r.employee.name }}</td>
+                <td>{{ r.leave_type.name }}</td>
+                <td>{{ r.start_date.strftime('%d %b') }} – {{ r.end_date.strftime('%d %b %Y') }}</td>
+                <td>{{ r.days }}</td>
+                <td><span class="stamp stamp-{{ r.status }}">{{ r.status }}</span></td>
+                <td>{{ r.reviewer.name if r.reviewer else '—' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">No requests recorded yet this year.</div>
+    {% endif %}
+</div>
+{% endblock %}

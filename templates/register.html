@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Create account — LeaveDesk{% endblock %}
+{% block auth_content %}
+<div class="auth-wrap">
+    <div class="auth-card">
+        <div class="brand">Leave<span>Desk</span></div>
+        <div class="sub">Create your employee account</div>
+        {% include '_flashes.html' %}
+        <form method="POST">
+            <label for="name">Full name</label>
+            <input type="text" id="name" name="name" required autofocus>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+            <label for="department">Department</label>
+            <input type="text" id="department" name="department" placeholder="e.g. Engineering">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit" class="btn btn-primary">Create account</button>
+        </form>
+        <div class="switch">Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a></div>
+    </div>
+</div>
+{% endblock %}

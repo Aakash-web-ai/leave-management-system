@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}My History — LeaveDesk{% endblock %}
+{% block content %}
+<h1>My Leave History</h1>
+<div class="card">
+    {% if requests %}
+    <table>
+        <thead>
+            <tr><th>Type</th><th>Dates</th><th>Days</th><th>Reason</th><th>Status</th><th>Applied</th><th></th></tr>
+        </thead>
+        <tbody>
+            {% for r in requests %}
+            <tr>
+                <td>{{ r.leave_type.name }}</td>
+                <td>{{ r.start_date.strftime('%d %b') }} – {{ r.end_date.strftime('%d %b %Y') }}</td>
+                <td>{{ r.days }}</td>
+                <td>{{ r.reason or '—' }}</td>
+                <td><span class="stamp stamp-{{ r.status }}">{{ r.status }}</span></td>
+                <td>{{ r.applied_on.strftime('%d %b %Y') }}</td>
+                <td>
+                    {% if r.status == 'pending' %}
+                    <form method="POST" action="{{ url_for('employee.cancel_request', request_id=r.id) }}" onsubmit="return confirm('Cancel this request?');">
+                        <button type="submit" class="btn btn-outline btn-small">Cancel</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">No leave requests yet.</div>
+    {% endif %}
+</div>
+{% endblock %}

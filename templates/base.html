@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Leave Management{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    {% if current_user.is_authenticated %}
+    <div class="shell">
+        <aside class="sidebar">
+            <div class="brand">Leave<span>Desk</span></div>
+            <nav>
+                <a href="{{ url_for('employee.dashboard') }}" class="{{ 'active' if request.endpoint == 'employee.dashboard' }}">Dashboard</a>
+                <a href="{{ url_for('employee.apply_leave') }}" class="{{ 'active' if request.endpoint == 'employee.apply_leave' }}">Apply for Leave</a>
+                <a href="{{ url_for('employee.history') }}" class="{{ 'active' if request.endpoint == 'employee.history' }}">My History</a>
+                {% if current_user.is_manager_or_admin() %}
+                <a href="{{ url_for('manager.team_requests') }}" class="{{ 'active' if request.endpoint == 'manager.team_requests' }}">Team Requests</a>
+                {% endif %}
+                {% if current_user.role == 'admin' %}
+                <a href="{{ url_for('manager.manage_employees') }}" class="{{ 'active' if request.endpoint == 'manager.manage_employees' }}">Employees</a>
+                <a href="{{ url_for('manager.manage_leave_types') }}" class="{{ 'active' if request.endpoint == 'manager.manage_leave_types' }}">Leave Types</a>
+                <a href="{{ url_for('manager.reports') }}" class="{{ 'active' if request.endpoint == 'manager.reports' }}">Reports</a>
+                {% endif %}
+            </nav>
+            <div class="user-box">
+                <strong>{{ current_user.name }}</strong>
+                {{ current_user.role|capitalize }}{% if current_user.department %} · {{ current_user.department }}{% endif %}
+                <br>
+                <a class="logout-link" href="{{ url_for('auth.logout') }}">Log out</a>
+            </div>
+        </aside>
+        <main class="main">
+            {% include '_flashes.html' %}
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    {% else %}
+        {% block auth_content %}{% endblock %}
+    {% endif %}
+</body>
+</html>

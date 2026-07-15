@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Employees — LeaveDesk{% endblock %}
+{% block content %}
+<h1>Manage Employees</h1>
+<div class="card">
+    <table>
+        <thead>
+            <tr><th>Name</th><th>Email</th><th>Role</th><th>Manager</th><th>Active</th><th></th></tr>
+        </thead>
+        <tbody>
+            {% for e in employees %}
+            <form id="emp-form-{{ e.id }}" method="POST" action="{{ url_for('manager.update_employee', emp_id=e.id) }}"></form>
+            <tr>
+                <td>{{ e.name }}</td>
+                <td>{{ e.email }}</td>
+                <td>
+                    <select name="role" form="emp-form-{{ e.id }}">
+                        <option value="employee" {{ 'selected' if e.role=='employee' }}>Employee</option>
+                        <option value="manager" {{ 'selected' if e.role=='manager' }}>Manager</option>
+                        <option value="admin" {{ 'selected' if e.role=='admin' }}>Admin</option>
+                    </select>
+                </td>
+                <td>
+                    <select name="manager_id" form="emp-form-{{ e.id }}">
+                        <option value="">— None —</option>
+                        {% for m in managers %}
+                        <option value="{{ m.id }}" {{ 'selected' if e.manager_id==m.id }}>{{ m.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td><input type="checkbox" name="is_active" form="emp-form-{{ e.id }}" {{ 'checked' if e.is_active_flag }}></td>
+                <td><button type="submit" form="emp-form-{{ e.id }}" class="btn btn-primary btn-small">Save</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

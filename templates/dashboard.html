@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — LeaveDesk{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Welcome, {{ current_user.name.split(' ')[0] }}</h1>
+    <a href="{{ url_for('employee.apply_leave') }}" class="btn btn-gold">+ Apply for Leave</a>
+</div>
+
+<h3 style="margin-bottom:12px;">Leave Balance {{ balances[0].year if balances else '' }}</h3>
+<div class="grid-3">
+    {% for b in balances %}
+    <div class="balance-card">
+        <div class="type-name">{{ b.leave_type.name }}</div>
+        <div class="remaining">{{ b.remaining_days|round(1) }} <span style="font-size:0.9rem;color:var(--ink-soft);">days left</span></div>
+        <div class="used-of">{{ b.used_days }} used of {{ b.total_days }}</div>
+    </div>
+    {% endfor %}
+</div>
+
+<div style="margin-top:32px;" class="card">
+    <div class="page-header" style="margin-bottom:12px;">
+        <h3 style="margin:0;">Recent Requests</h3>
+        <a href="{{ url_for('employee.history') }}" style="font-size:0.85rem;">View all →</a>
+    </div>
+    {% if recent_requests %}
+    <table>
+        <thead>
+            <tr><th>Type</th><th>Dates</th><th>Days</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+            {% for r in recent_requests %}
+            <tr>
+                <td>{{ r.leave_type.name }}</td>
+                <td>{{ r.start_date.strftime('%d %b') }} – {{ r.end_date.strftime('%d %b %Y') }}</td>
+                <td>{{ r.days }}</td>
+                <td><span class="stamp stamp-{{ r.status }}">{{ r.status }}</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">No leave requests yet. Apply when you need time off.</div>
+    {% endif %}
+</div>
+{% endblock %}

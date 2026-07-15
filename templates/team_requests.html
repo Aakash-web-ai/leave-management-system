@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Team Requests — LeaveDesk{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Team Requests</h1>
+    <div>
+        <a href="?status=pending" class="btn btn-outline btn-small {{ 'btn-primary' if status_filter=='pending' }}">Pending</a>
+        <a href="?status=approved" class="btn btn-outline btn-small {{ 'btn-primary' if status_filter=='approved' }}">Approved</a>
+        <a href="?status=rejected" class="btn btn-outline btn-small {{ 'btn-primary' if status_filter=='rejected' }}">Rejected</a>
+        <a href="?status=all" class="btn btn-outline btn-small {{ 'btn-primary' if status_filter=='all' }}">All</a>
+    </div>
+</div>
+
+<div class="card">
+    {% if requests %}
+    <table>
+        <thead>
+            <tr><th>Employee</th><th>Type</th><th>Dates</th><th>Days</th><th>Reason</th><th>Status</th>{% if status_filter == 'pending' %}<th>Action</th>{% endif %}</tr>
+        </thead>
+        <tbody>
+            {% for r in requests %}
+            <tr>
+                <td>{{ r.employee.name }}</td>
+                <td>{{ r.leave_type.name }}</td>
+                <td>{{ r.start_date.strftime('%d %b') }} – {{ r.end_date.strftime('%d %b %Y') }}</td>
+                <td>{{ r.days }}</td>
+                <td>{{ r.reason or '—' }}</td>
+                <td><span class="stamp stamp-{{ r.status }}">{{ r.status }}</span></td>
+                {% if r.status == 'pending' %}
+                <td>
+                    <form method="POST" action="{{ url_for('manager.review_request', request_id=r.id) }}" style="display:flex; gap:6px;">
+                        <input type="hidden" name="comment" value="">
+                        <button type="submit" name="action" value="approve" class="btn btn-approve btn-small">Approve</button>
+                        <button type="submit" name="action" value="reject" class="btn btn-reject btn-small">Reject</button>
+                    </form>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">No {{ status_filter }} requests.</div>
+    {% endif %}
+</div>
+{% endblock %}
